@@ -36,7 +36,7 @@ export default function Navbar() {
                 </div>
 
                 {/* MIDDLE: Menu (Glass pill style) */}
-                <div className="hidden md:flex justify-end gap-8 px-4 py-2  rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-gray-300 text-sm">
+                <div className="hidden md:flex justify-items-end gap-8 px-4 py-2  rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-gray-300 text-sm">
 
                     <Link href="/jobs" className="hover:text-white transition ">
                         Browse Jobs
@@ -69,6 +69,7 @@ export default function Navbar() {
                         </>
                     ) : (
                         <div className="flex items-center gap-3">
+                            <div>Welcome, {user.name}!</div>
                             <Image
                                 src={user?.image || "/avatar.png"}
                                 alt="User"
@@ -118,7 +119,7 @@ export default function Navbar() {
                             </Link>
                         </>
                     ) : (
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-xl" onClick={handleLogout}>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-full" onClick={handleLogout}>
                             Logout
                         </button>
                     )}

@@ -1,14 +1,14 @@
-import { DashboardSidebar } from '@/components/dashboard/DashboardSidbar';
-
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidbar";
 
 const DashboardLayout = ({ children }) => {
     return (
-        <div className="flex min-h-screen ">
+        <div className="flex h-screen overflow-hidden bg-black">
             <DashboardSidebar />
-            <div>
-                {children}
-            </div>
-
+            <main className="flex-1 relative overflow-y-auto focus:outline-none">
+                <div className="py-6">
+                    {children}
+                </div>
+            </main>
         </div>
     );
 };
