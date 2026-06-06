@@ -1,9 +1,13 @@
 import { Table } from "@heroui/react";
 import { getCompanyJobs } from "@/lib/api/jobs";
+import { getLoginRecruiterCompany } from "@/lib/api/companies";
 
 const RecruiterJobsPage = async () => {
-    const companyId = "company_123";
-    const jobs = await getCompanyJobs(companyId);
+
+    const company = await getLoginRecruiterCompany();
+    console.log("Company in RecruiterJobsPage:", company);
+    const jobs = await getCompanyJobs(company._id) || [];
+    console.log("Jobs in RecruiterJobsPage:", jobs);
 
     return (
         <div className="p-6 bg-[#0a0a0a] min-h-screen text-white">
@@ -21,10 +25,10 @@ const RecruiterJobsPage = async () => {
 
                         {/* HEADER */}
                         <Table.Header>
-                            <Table.Column isRowHeader>Name</Table.Column>
-                            <Table.Column>Category</Table.Column>
+                            <Table.Column isRowHeader>Title</Table.Column>
                             <Table.Column>Location</Table.Column>
                             <Table.Column>Status</Table.Column>
+                            <Table.Column>Salary</Table.Column>
                             <Table.Column>Website</Table.Column>
                             <Table.Column>Actions</Table.Column>
                         </Table.Header>
@@ -34,12 +38,16 @@ const RecruiterJobsPage = async () => {
                             {jobs?.map((job) => (
                                 <Table.Row key={job._id}>
 
-                                    <Table.Cell>{job.name}</Table.Cell>
+                                    {/* TITLE (FIXED) */}
+                                    <Table.Cell>
+                                        {job.title || "Untitled Job"}
+                                    </Table.Cell>
+                                    {/* LOCATION */}
+                                    <Table.Cell>
+                                        {job.location || "Dhaka, Bangladesh"}
+                                    </Table.Cell>
 
-                                    <Table.Cell>{job.category}</Table.Cell>
-
-                                    <Table.Cell>{job.location}</Table.Cell>
-
+                                    {/* STATUS */}
                                     <Table.Cell>
                                         <span
                                             className={`px-2 py-1 rounded text-xs ${job.status === "active"
@@ -47,10 +55,16 @@ const RecruiterJobsPage = async () => {
                                                 : "bg-gray-600"
                                                 }`}
                                         >
-                                            {job.status}
+                                            {job.status || "inactive"}
                                         </span>
                                     </Table.Cell>
 
+                                    {/* SALARY */}
+                                    <Table.Cell>
+                                        {job.salaryMin} - {job.salaryMax}
+                                    </Table.Cell>
+
+                                    {/* WEBSITE */}
                                     <Table.Cell>
                                         <a
                                             href={job.website}

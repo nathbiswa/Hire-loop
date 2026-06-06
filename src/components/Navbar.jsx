@@ -9,7 +9,7 @@ export default function Navbar() {
     const { data: session } = authClient.useSession();
 
     const user = session?.user || null;
-    console.log("Current User:", user);
+    // console.log("Current User:", user);
 
     const [isOpen, setIsOpen] = useState(false);
 

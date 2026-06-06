@@ -1,15 +1,22 @@
+"use client";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+import { serverMutations } from "../core/sever";
 
 export const createJob = async (jobData) => {
-
-    const res = await fetch(`${API_BASE_URL}/api/jobs`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jobData),
-    });
-
-    return res.json();
+    return serverMutations("/api/jobs", jobData);
 }
+
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+// export const createJob = async (jobData) => {
+
+//     const res = await fetch(`${API_BASE_URL}/api/jobs`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(jobData),
+//     });
+
+//     return res.json();
+// }
