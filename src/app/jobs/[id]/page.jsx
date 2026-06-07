@@ -95,12 +95,12 @@ const JobDetailsPage = async ({ params }) => {
                     </Card.Content>
 
                     {/* ফুটার অ্যাকশন: ফাইনাল সাবমিশন বা ইমেইল বাটন */}
-                    <Card.Footer className="pt-4 border-t border-neutral-800/60 shrink-0">
-                        <Button
-                            className="w-full bg-white text-black font-bold hover:bg-neutral-200 transition-colors rounded-xl py-6 text-base shadow-lg"
+                    <Card.Footer className="pt-2 border-t border-neutral-800/60 shrink-0">
+                        <Link href={`/jobs/${id}/apply`}
+                            className="w-full bg-white text-black font-bold hover:bg-neutral-200 transition-colors rounded-xl py-2 px-2 text-base shadow-lg"
                         >
                             Proceed to Apply
-                        </Button>
+                        </Link>
                     </Card.Footer>
 
                 </Card>
