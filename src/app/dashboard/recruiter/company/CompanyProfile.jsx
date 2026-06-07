@@ -148,6 +148,8 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                             <Image
                                 src={company.logo}
                                 alt={company.name}
+                                width={64}
+                                height={64}
                                 className="w-16 h-16 rounded-lg object-cover bg-zinc-800 border border-zinc-700"
                             />
                         ) : (

@@ -1,27 +1,22 @@
-import JobCard from "@/components/jobs/JobCard";
+import JobContainer from "@/components/jobs/JobContainer";
 import { getJobs } from "@/lib/api/jobs";
-const sampleData = {
-    _id: { $oid: "6a24757f2ec7a5cbbc40b4a0" },
-    name: "IT Solving Care",
-    websiteUrl: "https://my-portfolio-xi-ebon-91fr1lx26d.vercel.app",
-    location: "Khulna",
-    description: "Final test",
-    industry: "Technology",
-    employeeCount: "1-10 employees",
-    logo: "https://i.ibb.co/7t14Skmg/Microsoft-logo-svg.png",
-    status: "Pending",
-    recruiterId: "6a2463ae346fbcdfcf88dc5e",
-    createdAt: { $date: "2026-06-06T19:31:11.350Z" }
-};
 
-export default async function Page() {
+export default async function JobsPage() {
+    // API থেকে ডাইনামিক ডাটা ফেচ করা হচ্ছে (সার্ভার সাইডেই থাকবে)
     const jobs = await getJobs();
 
-
     return (
-        <div className="p-8 bg-black min-h-screen flex justify-center items-center">
-            <h2>Jobs ({jobs.length})</h2>
-            <JobCard job={jobs[1]} />
+        <div className="max-w-7xl mx-auto p-8 bg-black min-h-screen text-white">
+            {/* হেডার সেকশন */}
+            <div className="max-w-6xl mx-auto mb-8">
+                <h2 className="text-2xl font-bold tracking-tight">
+                    All Available Jobs ({jobs?.length || 0})
+                </h2>
+                <p className="text-neutral-400 text-sm mt-1">Explore current openings</p>
+            </div>
+
+            {/* ফিল্টার এবং গ্রিড কন্টেইনার কম্পোনেন্ট ইনসার্ট করা হলো */}
+            <JobContainer initialJobs={jobs || []} />
         </div>
     );
 }
