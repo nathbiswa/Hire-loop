@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Check } from "@gravity-ui/icons";
 import Link from "next/link";
-import { Radio, RadioGroup } from "@heroui/react";
 import {
     Button,
     Description,
@@ -14,106 +14,81 @@ import {
 } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function RegisterPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectTo = searchParams.get("redirect") || "/";
+
+    // role state (UI control এর জন্য)
+    const [role, setRole] = useState("seeker");
+
+    const plan = role === 'seeker' ? 'seeker_free' : 'recruiter_free';
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
 
+        // console.log("Form Data:", data); // এখানে role থাকবে
+        // console.log("Role State:", role);
+
         const { data: userData, error } = await authClient.signUp.email({
             email: data.email,
             password: data.password,
             name: data.name,
-            role: data.role,
-            image: data.image
+            role: data.role, // ✅ directly form থেকে
+            image: data.image,
+            plan,
         });
 
-        console.log("User Data:", userData);
+        // console.log("User Data:", userData);
 
         if (!error) {
-            toast.success("Registration successful! You can now log in.");
-            router.push("/");
+            toast.success("Registration successful!");
+            router.push(redirectTo);
         } else {
-            console.error("Error:", error);
-            toast.error("Registration failed. Please try again.");
+            console.error(error);
+            toast.error("Registration failed");
         }
-
-    };
-
-    // 👉 Google login handler (connect later)
-    const handleGoogleLogin = () => {
-        console.log("Google login clicked");
     };
 
     return (
         <div className="w-full md:w-100 mx-auto flex items-center justify-center
-         bg-gradient-to-br from-[#0f0f0f] via-[#1a1a1a] to-[#2a2a2a] rounded-2xl px-4 mt-10">
+        bg-gradient-to-br from-[#0f0f0f] via-[#1a1a1a] to-[#2a2a2a] rounded-2xl px-4 mt-10">
 
             <Form
                 className="w-full md:w-96 mx-auto flex flex-col gap-5 
-        bg-white/5 backdrop-blur-xl 
-        border border-white/10 
-        text-white 
-        p-6 rounded-2xl shadow-xl"
+                bg-white/5 backdrop-blur-xl 
+                border border-white/10 
+                text-white 
+                p-6 rounded-2xl shadow-xl"
                 onSubmit={onSubmit}
             >
-
-                {/* Title */}
                 <h1 className="text-2xl font-semibold text-center">
                     Create Account
                 </h1>
 
                 {/* Name */}
-                <TextField
-                    isRequired
-                    name="name"
-                    validate={(value) => {
-                        if (value.length < 3) {
-                            return "Name must be at least 3 characters";
-                        }
-                        return null;
-                    }}
-                >
+                <TextField isRequired name="name">
                     <Label className="text-gray-300">Full Name</Label>
-                    <Input className="bg-white/5 border-white/10 text-white" placeholder="John Doe" />
+                    <Input placeholder="John Doe" />
                     <FieldError />
                 </TextField>
 
                 {/* Email */}
-                <TextField
-                    isRequired
-                    name="email"
-                    type="email"
-                    validate={(value) => {
-                        if (
-                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
-                        ) {
-                            return "Please enter a valid email";
-                        }
-                        return null;
-                    }}
-                >
+                <TextField isRequired name="email" type="email">
                     <Label className="text-gray-300">Email</Label>
-                    <Input className="bg-white/5 border-white/10 text-white" placeholder="john@example.com" />
+                    <Input placeholder="john@example.com" />
                     <FieldError />
                 </TextField>
 
-                {/* Image URL */}
-                <TextField
-                    name="image"
-                    validate={(value) => {
-                        if (value && !value.startsWith("http")) {
-                            return "Enter a valid image URL";
-                        }
-                        return null;
-                    }}
-                >
+                {/* Image */}
+                <TextField name="image">
                     <Label className="text-gray-300">Image URL</Label>
-                    <Input className="bg-white/5 border-white/10 text-white" placeholder="https://example.com/avatar.png" />
+                    <Input placeholder="https://example.com/avatar.png" />
                     <Description className="text-gray-400">
                         Optional profile picture
                     </Description>
@@ -121,67 +96,49 @@ export default function RegisterPage() {
                 </TextField>
 
                 {/* Password */}
-                <TextField
-                    isRequired
-                    name="password"
-                    type="password"
-                    validate={(value) => {
-                        if (value.length < 8) {
-                            return "Password must be at least 8 characters";
-                        }
-                        if (!/[A-Z]/.test(value)) {
-                            return "Must include at least 1 uppercase letter";
-                        }
-                        if (!/[0-9]/.test(value)) {
-                            return "Must include at least 1 number";
-                        }
-                        return null;
-                    }}
-                >
+                <TextField isRequired name="password" type="password">
                     <Label className="text-gray-300">Password</Label>
-                    <Input className="bg-white/5 border-white/10 text-white" placeholder="Enter your password" />
-                    <Description className="text-gray-400">
-                        Min 8 chars, 1 uppercase, 1 number
-                    </Description>
+                    <Input placeholder="Enter your password" />
                     <FieldError />
                 </TextField>
-                {/* Role Selection */}
-                <div className="flex flex-col gap-4">
-                    <RadioGroup defaultValue="seeker" name="role" orientation="horizontal">
-                        <Radio value="seeker">
-                            <Radio.Control>
-                                <Radio.Indicator />
-                            </Radio.Control>
-                            <Radio.Content>
-                                <Label>Job Seeker</Label>
-                            </Radio.Content>
-                        </Radio>
-                        <Radio value="recruiter">
-                            <Radio.Control>
-                                <Radio.Indicator />
-                            </Radio.Control>
-                            <Radio.Content>
-                                <Label>Recruiter</Label>
-                            </Radio.Content>
-                        </Radio>
-                    </RadioGroup>
+
+                {/* ✅ ROLE (100% WORKING) */}
+                <div className="flex flex-col gap-2">
+                    <Label className="text-gray-300">Select Role</Label>
+
+                    <div className="flex gap-6 text-white">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="radio"
+                                name="role"
+                                value="seeker"
+                                checked={role === "seeker"}
+                                onChange={() => setRole("seeker")}
+                            />
+                            Job Seeker
+                        </label>
+
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="radio"
+                                name="role"
+                                value="recruiter"
+                                checked={role === "recruiter"}
+                                onChange={() => setRole("recruiter")}
+                            />
+                            Recruiter
+                        </label>
+                    </div>
                 </div>
 
                 {/* Buttons */}
                 <div className="flex gap-3">
-                    <Button
-                        type="submit"
-                        className="w-full bg-white text-black hover:bg-gray-200"
-                    >
+                    <Button type="submit" className="w-full bg-white text-black">
                         <Check />
                         Register
                     </Button>
 
-                    <Button
-                        type="reset"
-                        variant="secondary"
-                        className="w-full border border-white/20 text-white hover:bg-white/10"
-                    >
+                    <Button type="reset" variant="secondary" className="w-full">
                         Reset
                     </Button>
                 </div>
@@ -193,21 +150,17 @@ export default function RegisterPage() {
                     <div className="flex-1 h-px bg-white/10" />
                 </div>
 
-                {/* Google Login */}
-                <Button
-                    type="button"
-                    onClick={handleGoogleLogin}
-                    className="w-full bg-white text-black hover:bg-gray-200"
-                >
+                {/* Google */}
+                <Button type="button" className="w-full bg-white text-black">
                     Continue with Google
                 </Button>
 
-                {/* Login Redirect */}
+                {/* Login */}
                 <p className="text-center text-sm text-gray-400">
                     Already have an account?{" "}
                     <Link
-                        href="/auth/login"
-                        className="text-indigo-400 hover:text-indigo-300"
+                        href={`/auth/login?redirect=${redirectTo}`}
+                        className="text-indigo-400"
                     >
                         Login
                     </Link>

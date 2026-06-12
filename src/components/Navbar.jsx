@@ -3,16 +3,41 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useState } from "react";
 
 export default function Navbar() {
     const { data: session } = authClient.useSession();
-
     const user = session?.user || null;
-    // console.log("Current User:", user);
+    const navLink = [
+        {
+            label: 'Browser Jobs',
+            href: '/jobs'
+        },
+        {
+            label: 'Company',
+            href: '/company'
+        },
+        {
+            label: 'Pricing',
+            href: '/plans'
+        },
+    ];
+
+    const dashBoardLink = {
+        seeker: '/dashboard/seeker',
+        recruiter: '/dashboard/recruiter'
+    }
+
+    if (user?.email) {
+        navLink.push(
+            {
+                label: "Dashboard",
+                href: dashBoardLink[user?.role || "seeker"]
+            }
+        )
+    }
 
     const [isOpen, setIsOpen] = useState(false);
-
     const handleLogout = async () => {
         await authClient.signOut();
         // Optionally, you can add a toast notification here
@@ -36,17 +61,20 @@ export default function Navbar() {
                 </div>
 
                 {/* MIDDLE: Menu (Glass pill style) */}
-                <div className="hidden md:flex justify-items-end gap-8 px-4 py-2  rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-gray-300 text-sm">
+                <div className="hidden md:flex justify-items-end gap-8 px-4 py-2  
+                rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-gray-300 text-sm">
+                    <nav>
+                        <ul className="flex gap-6">
+                            {navLink.map((item, index) => (
+                                <li className="hover:text-white transition" key={index}>
+                                    <Link href={item.href}>
+                                        {item.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
 
-                    <Link href="/jobs" className="hover:text-white transition ">
-                        Browse Jobs
-                    </Link>
-                    <Link href="/company" className="hover:text-white transition">
-                        Company
-                    </Link>
-                    <Link href="/pricing" className="hover:text-white transition ">
-                        Pricing
-                    </Link>
                 </div>
 
                 {/* RIGHT: Auth Section */}
@@ -95,16 +123,17 @@ export default function Navbar() {
 
             {/* MOBILE MENU */}
             {isOpen && (
-                <div className="md:hidden px-4 pb-4 space-y-3 text-gray-300 bg-[#111]">
-                    <Link href="/jobs" className="block">
-                        Browse Jobs
-                    </Link>
-                    <Link href="/company" className="block">
-                        Company
-                    </Link>
-                    <Link href="/pricing" className="block">
-                        Pricing
-                    </Link>
+                <nav className="md:hidden px-4 pb-4 space-y-3 text-gray-300 bg-[#111]">
+
+                    <ul className="flex flex-col gap-4">
+                        {navLink.map((item, index) => (
+                            <li key={index}>
+                                <Link href={item.href}>
+                                    {item.label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
 
                     {!user ? (
                         <>
@@ -119,11 +148,14 @@ export default function Navbar() {
                             </Link>
                         </>
                     ) : (
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-full" onClick={handleLogout}>
+                        <button
+                            className="bg-red-500 text-white px-4 py-2 rounded-full"
+                            onClick={handleLogout}
+                        >
                             Logout
                         </button>
                     )}
-                </div>
+                </nav>
             )}
         </nav>
     );

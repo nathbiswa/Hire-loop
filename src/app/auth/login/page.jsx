@@ -13,10 +13,15 @@ import {
 } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
     const router = useRouter();
+
+    const searchParams = useSearchParams();
+    const redirectTo = searchParams.get('redirect') || '/';
+
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
@@ -30,7 +35,7 @@ export default function LoginPage() {
 
         if (!error) {
             toast.success("Login successful! Welcome back.");
-            router.push("/");
+            router.push(redirectTo);
         } else {
             toast.error("Login failed. Please check your credentials.");
         }
@@ -38,7 +43,7 @@ export default function LoginPage() {
 
     // 👉 Google login handler (connect later)
     const handleGoogleLogin = () => {
-        console.log("Google login clicked");
+        // console.log("Google login clicked");
     };
 
     return (
@@ -138,7 +143,7 @@ export default function LoginPage() {
                 <p className="text-center text-sm text-gray-400">
                     Don't have an account?{" "}
                     <Link
-                        href="/auth/register"
+                        href={`/auth/register?redirect=${redirectTo}`}
                         className="text-indigo-400 hover:text-indigo-300"
                     >
                         Register
