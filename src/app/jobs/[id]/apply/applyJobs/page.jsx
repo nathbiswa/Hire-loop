@@ -69,12 +69,8 @@ const JobApply = ({ applicant, job }) => {
             applicantName: applicant?.name,
             applicantEmail: applicant?.email,
             applicantId: applicant?.id,
+            status: "applied",
             ...formData
-            // fullName: formData.fullName,
-            // email: formData.email,
-            // // experience: formData.experience,
-            // // coverLetter: formData.coverLetter,
-            // // resume: formData.resume // ফাইল অবজেক্টটি টেক্সট আকারে পাস হবে
         };
 
 
