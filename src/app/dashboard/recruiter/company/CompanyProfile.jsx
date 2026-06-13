@@ -77,7 +77,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
             industry: formData.get("industry") || "Technology", // Default value if not selected
             employeeCount: formData.get("employeeCount") || "1-10 employees", // Default value if not selected
             logo: logoUrl,
-            status: company?.status || "Pending", // New companies start with "Pending Approval"
+            status: company && company.status ? company.status : "Pending", // New companies start with "Pending Approval"
             recruiterId: recruiter?.id, // Include the recruiter's ID
         };
 
@@ -87,10 +87,14 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
 
         setCompany(companyData);
 
+        console.log("Create the company before the data", companyData)
+
         const result = await cteateCompany(companyData);
 
         if (result?.insertedId) {
-            toast.success("Company details saved successfully!");
+            const saveCompany = { ...company, _id: result.insertedId }
+            setCompany(saveCompany),
+                toast.success("Company details saved successfully!");
         } else {
             toast.error("Failed to save company details.");
         }
