@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Table, Button } from '@heroui/react';
 import { ChevronLeft, ChevronRight } from '@gravity-ui/icons';
 import { updateCompany } from '@/lib/actions/companys';
+import Image from 'next/image';
 
 export default function CompanyTable({ initialCompanies }) {
 
@@ -127,7 +128,7 @@ export default function CompanyTable({ initialCompanies }) {
                                             <div className="flex items-center gap-3">
                                                 <div className="h-8 w-8 flex items-center justify-center rounded-md bg-[#262626] text-white text-xs">
                                                     {company.logo ? (
-                                                        <img src={company.logo} alt="" className="h-full w-full object-contain" />
+                                                        <Image src={company.logo} alt="" width={300} height={300} className="h-full w-full object-contain" />
                                                     ) : getInitials(company.name)}
                                                 </div>
                                                 <span className="text-white text-sm">{company.name}</span>
